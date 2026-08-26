@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>استوديو الصوت الاحترافي</title>
+    <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
     <style>
         body { font-family: Tahoma, sans-serif; background: #f4f4f4; padding: 20px; text-align: right; margin: 0; }
         .container { max-width: 600px; margin: 40px auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -17,29 +18,21 @@
 <body>
     <div class="container">
         <h2>استوديو الصوت الاحترافي</h2>
-        <p>اكتب النص واستمع إليه فوراً بضغطة زر!</p>
+        <p>اكتب النص واضغط استماع وهينطق معاك فوراً!</p>
         
         <textarea id="textInput" placeholder="اكتب النص هنا بالعربية..."></textarea>
 
-        <button onclick="speakText()">استماع ونطق الصوت</button>
+        <button onclick="playVoice()">استماع ونطق الصوت</button>
     </div>
 
     <script>
-        function speakText() {
+        function playVoice() {
             const text = document.getElementById('textInput').value.trim();
-            
             if (!text) {
                 alert('الرجاء كتابة نص أولاً!');
                 return;
             }
-
-            const encodedText = encodeURIComponent(text);
-            const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodedText}&tl=ar&client=tw-ob`;
-            
-            const audio = new Audio(audioUrl);
-            audio.play().catch(err => {
-                alert('تعذر تشغيل الصوت، تأكد من اتصال الإنترنت.');
-            });
+            responsiveVoice.speak(text, "Arabic Female");
         }
     </script>
 </body>
