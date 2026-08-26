@@ -1,176 +1,65 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>استوديو الصوت الاحترافي</title>
     <style>
-        body {
-            font-family: Tahoma, sans-serif;
-            background-color: #f4f4f9;
-            text-align: center;
-            padding: 20px;
-            margin: 0;
-        }
-        .ad-banner {
-            background-color: #e9ecef;
-            color: #6c757d;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 13px;
-            border: 1px dashed #ced4da;
-        }
-        .container {
-            max-width: 600px;
-            margin: auto;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        h2 {
-            color: #333;
-            margin-bottom: 5px;
-        }
-        p {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-        textarea {
-            width: 100%;
-            height: 180px;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 16px;
-            resize: vertical;
-            box-sizing: border-box;
-            outline: none;
-            direction: rtl;
-            text-align: right;
-            line-height: 1.5;
-        }
-        textarea:focus {
-            border-color: #28a745;
-        }
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 15px 0;
-            background: #f9f9fb;
-            padding: 10px 15px;
-            border-radius: 8px;
-        }
-        label {
-            font-size: 14px;
-            color: #444;
-            font-weight: bold;
-        }
-        select {
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-            outline: none;
-            background: white;
-        }
-        button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 14px 20px;
-            font-size: 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            font-weight: bold;
-            transition: background 0.2s;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .download-btn {
-            background-color: #007bff;
-        }
-        .download-btn:hover {
-            background-color: #0056b3;
-        }
+        body { font-family: Tahoma, sans-serif; background: #f4f4f4; padding: 20px; text-align: right; margin: 0; }
+        .container { max-width: 600px; margin: 40px auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; margin-bottom: 10px; }
+        p { color: #666; text-align: center; margin-bottom: 20px; font-size: 14px; }
+        textarea { width: 100%; height: 130px; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: #444; }
+        select { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; background: white; }
+        button { width: 100%; padding: 14px; background: #2E7D32; color: white; border: none; border-radius: 6px; font-size: 18px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #1B5E20; }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <!-- مساحة الإعلان العلوي -->
-        <div class="ad-banner">مساحة إعلانية (Google AdSense Banner)</div>
-
         <h2>استوديو الصوت الاحترافي</h2>
-        <p>اكتب النصوص والقصص، استمع إليها، وحملها كملف MP3 فوراً!</p>
+        <p>اكتب النص واستمع إليه فوراً من هاتفك أو حاسوبك!</p>
         
-        <textarea id="textInput" placeholder="اكتب النص أو القصة كاملة هنا بالعربي..."></textarea>
+        <textarea id="textInput" placeholder="اكتب النص هنا بالعربية..."></textarea>
         
-        <div class="controls">
-            <label for="speedSelect">سرعة النطق:</label>
-            <select id="speedSelect">
-                <option value="1">عادي (طبيعي)</option>
-                <option value="1.25">سريع قليلاً</option>
-                <option value="0.75">بطيء (مناسب للقصص)</option>
-            </select>
-        </div>
-        
-        <button onclick="speakText()">استماع ونطق الصوت</button>
-        <button class="download-btn" onclick="downloadAudio()">تحميل الصوت كملف MP3</button>
+        <label for="rateSelect">سرعة النطق:</label>
+        <select id="rateSelect">
+            <option value="0.75">بطيء</option>
+            <option value="1" selected>عادي (طبيعي)</option>
+            <option value="1.25">سريع</option>
+        </select>
 
-        <!-- مساحة الإعلان السفلي -->
-        <div class="ad-banner" style="margin-top: 20px;">مساحة إعلانية (Google AdSense Banner)</div>
+        <button onclick="speakText()">استماع ونطق الصوت</button>
     </div>
 
     <script>
-        function getAudioUrl() {
-            const textInput = document.getElementById('textInput');
-            const text = textInput.value.trim();
-            if (!text) return null;
-            
-            const encodedText = encodeURIComponent(text);
-            return `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodedText}&tl=ar&client=tw-ob`;
-        }
-
         function speakText() {
-            const url = getAudioUrl();
-            if (!url) {
-                alert('الرجاء كتابة بعض النصوص أولاً');
-                return;
-            }
-
-            const audio = new Audio(url);
-            const speed = document.getElementById('speedSelect').value;
-            audio.playbackRate = parseFloat(speed);
-
-            audio.play().catch(error => {
-                alert('تعذر تشغيل الصوت، تأكد من اتصال الإنترنت.');
-            });
-        }
-
-        function downloadAudio() {
-            const textInput = document.getElementById('textInput');
-            const text = textInput.value.trim();
+            const text = document.getElementById('textInput').value.trim();
+            const rate = parseFloat(document.getElementById('rateSelect').value);
+            
             if (!text) {
-                alert('الرجاء كتابة النص المراد تحويله وتحميله أولاً');
+                alert('الرجاء كتابة نص أولاً!');
                 return;
             }
 
-            const url = getAudioUrl();
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'audio-story.mp3';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            if (!('speechSynthesis' in window)) {
+                alert('عذراً، متصفحك لا يدعم خاصية نطق الصوت.');
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'ar-SA';
+            utterance.rate = rate;
+
+            utterance.onerror = (event) => {
+                alert('تعذر تشغيل الصوت، تأكد من إعدادات المتصفح.');
+            };
+
+            window.speechSynthesis.speak(utterance);
         }
     </script>
-
 </body>
 </html>
