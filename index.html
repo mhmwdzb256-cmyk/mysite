@@ -19,9 +19,9 @@
 <body>
     <div class="container">
         <h2>استوديو الصوت الاحترافي</h2>
-        <p>اكتب النص واستمع إليه فوراً من هاتفك أو حاسوبك!</p>
+        <p>اكتب النص واستمع إليه فوراً!</p>
         
-        <textarea id="textInput" placeholder="اكتب النص هنا بالعربية..."></textarea>
+        <textarea id="textInput" placeholder="اكتب النص هنا..."></textarea>
         
         <label for="rateSelect">سرعة النطق:</label>
         <select id="rateSelect">
@@ -44,19 +44,14 @@
             }
 
             if (!('speechSynthesis' in window)) {
-                alert('عذراً، متصفحك لا يدعم خاصية نطق الصوت.');
+                alert('متصفحك لا يدعم النطق.');
                 return;
             }
 
             window.speechSynthesis.cancel();
 
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'ar-SA';
             utterance.rate = rate;
-
-            utterance.onerror = (event) => {
-                alert('تعذر تشغيل الصوت، تأكد من إعدادات المتصفح.');
-            };
 
             window.speechSynthesis.speak(utterance);
         }
