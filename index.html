@@ -3,36 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>استوديو الصوت الاحترافي</title>
-    <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+    <title>منصة تحويل النصوص لأصوات احترافية</title>
     <style>
-        body { font-family: Tahoma, sans-serif; background: #f4f4f4; padding: 20px; text-align: right; margin: 0; }
-        .container { max-width: 600px; margin: 40px auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #333; margin-bottom: 10px; }
-        p { color: #666; text-align: center; margin-bottom: 20px; font-size: 14px; }
-        textarea { width: 100%; height: 130px; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; padding: 14px; background: #2E7D32; color: white; border: none; border-radius: 6px; font-size: 18px; cursor: pointer; font-weight: bold; }
-        button:hover { background: #1B5E20; }
+        body { font-family: Tahoma, sans-serif; background: #f0f2f5; padding: 20px; text-align: right; margin: 0; color: #333; }
+        .container { max-width: 650px; margin: 30px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #2e7d32; margin-bottom: 5px; }
+        p.sub { color: #666; text-align: center; margin-bottom: 20px; font-size: 14px; }
+        .ad-container { background: #fff3cd; border: 1px dashed #ffeeba; text-align: center; padding: 12px; margin: 15px 0; border-radius: 6px; color: #856404; font-size: 13px; }
+        textarea { width: 100%; height: 140px; padding: 15px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; resize: vertical; }
+        .btn-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        button { flex: 1; padding: 14px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; transition: background 0.2s; }
+        .btn-play { background: #2e7d32; color: white; }
+        .btn-play:hover { background: #1b5e20; }
+        .btn-download { background: #1976d2; color: white; }
+        .btn-download:hover { background: #0d47a1; }
+        audio { width: 100%; margin-top: 15px; display: none; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>استوديو الصوت الاحترافي</h2>
-        <p>اكتب النص واضغط استماع وهينطق معاك فوراً!</p>
+        <!-- مساحة إعلانية علوية (مكان إعلانات جوجل مستقبلاً) -->
+        <div class="ad-container">
+            مساحة إعلانية علوية (Banner Ad)
+        </div>
+
+        <h2>منصة تحويل النصوص لأصوات احترافية</h2>
+        <p class="sub">اكتب النص، استمع إليه، وحمله كملف MP3 بكل سهولة!</p>
         
         <textarea id="textInput" placeholder="اكتب النص هنا بالعربية..."></textarea>
 
-        <button onclick="playVoice()">استماع ونطق الصوت</button>
+        <div class="btn-group">
+            <button class="btn-play" onclick="playText()">استماع مباشر</button>
+            <button class="btn-download" onclick="downloadMP3()">تحميل كـ MP3</button>
+        </div>
+
+        <audio id="audioPlayer" controls></audio>
+
+        <!-- مساحة إعلانية سفلي (مكان إعلانات جوجل مستقبلاً) -->
+        <div class="ad-container" style="margin-top: 20px;">
+            مساحة إعلانية سفلية (Banner Ad)
+        </div>
     </div>
 
     <script>
-        function playVoice() {
+        function getAudioUrl() {
             const text = document.getElementById('textInput').value.trim();
             if (!text) {
                 alert('الرجاء كتابة نص أولاً!');
+                return null;
+            }
+            const encodedText = encodeURIComponent(text);
+            return `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodedText}&tl=ar&client=tw-ob`;
+        }
+
+        function playText() {
+            const url = getAudioUrl();
+            if (!url) return;
+            const player = document.getElementById('audioPlayer');
+            player.src = url;
+            player.style.display = 'block';
+            player.play().catch(err => {
+                alert('تعذر تشغيل الصوت، تأكد من اتصال الإنترنت.');
+            });
+        }
+
+        function downloadMP3() {
+            const text = document.getElementById('textInput').value.trim();
+            if (!text) {
+                alert('الرجاء كتابة نص أولاً لتحميله!');
                 return;
             }
-            responsiveVoice.speak(text, "Arabic Female");
+            const url = getAudioUrl();
+            if (!url) return;
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'audio-speech.mp3';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
     </script>
 </body>
