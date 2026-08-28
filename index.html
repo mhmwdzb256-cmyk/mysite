@@ -2,75 +2,54 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة تحويل النصوص لأصوات احترافية</title>
+    <title>منصة تحويل النصوص لأصوات</title>
     <style>
-        body { font-family: Tahoma, sans-serif; background: #f0f2f5; padding: 20px; text-align: right; margin: 0; color: #333; }
-        .container { max-width: 600px; margin: 30px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #2e7d32; margin-bottom: 5px; }
-        p.sub { color: #666; text-align: center; margin-bottom: 20px; font-size: 14px; }
-        .ad-container { background: #fff3cd; border: 1px dashed #ffeeba; text-align: center; padding: 12px; margin: 15px 0; border-radius: 6px; color: #856404; font-size: 13px; }
-        textarea { width: 100%; height: 130px; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; resize: vertical; }
-        button { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: bold; margin-bottom: 12px; transition: background 0.2s; }
-        .btn-play { background: #2e7d32; color: white; }
-        .btn-play:hover { background: #1b5e20; }
-        .btn-download { background: #1976d2; color: white; }
-        .btn-download:hover { background: #0d47a1; }
+        body { background: #f0f2f5; font-family: Tahoma, Arial, sans-serif; text-align: right; direction: rtl; margin: 0; padding: 20px; }
+        .box { width: 500px; max-width: 100%; margin: 20px auto; background: #fff; padding: 25px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+        .ad { background: #fff3cd; padding: 12px; margin-bottom: 15px; text-align: center; border: 1px dashed #ffeeba; color: #856404; font-size: 13px; border-radius: 4px; }
+        textarea { width: 100%; height: 130px; margin-bottom: 15px; padding: 10px; box-sizing: border-box; font-size: 16px; display: block; border: 1px solid #ccc; border-radius: 4px; resize: vertical; }
+        .btn1 { width: 100%; padding: 14px; background: #2e7d32; color: #fff; border: none; font-size: 16px; font-weight: bold; margin-bottom: 10px; cursor: pointer; display: block; border-radius: 4px; }
+        .btn2 { width: 100%; padding: 14px; background: #1976d2; color: #fff; border: none; font-size: 16px; font-weight: bold; margin-bottom: 10px; cursor: pointer; display: block; border-radius: 4px; }
         audio { width: 100%; margin-top: 10px; display: none; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- مساحة إعلانية علوية -->
-        <div class="ad-container">مساحة إعلانية علوية (Banner Ad)</div>
-
-        <h2>منصة تحويل النصوص لأصوات احترافية</h2>
-        <p class="sub">اكتب النص، استمع إليه، وحمله كملف MP3 بكل سهولة!</p>
+    <div class="box">
+        <div class="ad">مساحة إعلانية علوية (Banner Ad)</div>
         
-        <textarea id="textInput" placeholder="اكتب النص هنا بالعربية..."></textarea>
+        <h2 style="color: #2e7d32; text-align: center; margin-top: 0;">منصة تحويل النصوص لأصوات</h2>
+        <p style="text-align: center; color: #666; font-size: 14px;">اكتب النص، استمع إليه، وحمله كملف MP3</p>
 
-        <button class="btn-play" onclick="playText()">استماع مباشر</button>
-        <button class="btn-download" onclick="downloadMP3()">تحميل كـ MP3</button>
+        <textarea id="txt" placeholder="اكتب النص هنا بالعربية..."></textarea>
 
-        <audio id="audioPlayer" controls></audio>
+        <button class="btn1" onclick="playAudio()">استماع مباشر</button>
+        <button class="btn2" onclick="downloadAudio()">تحميل كـ MP3</button>
 
-        <!-- مساحة إعلانية سفلية -->
-        <div class="ad-container" style="margin-top: 15px;">مساحة إعلانية سفلية (Banner Ad)</div>
+        <audio id="player" controls></audio>
+
+        <div class="ad" style="margin-top: 15px;">مساحة إعلانية سفلية (Banner Ad)</div>
     </div>
 
     <script>
-        function getAudioUrl() {
-            const text = document.getElementById('textInput').value.trim();
-            if (!text) {
-                alert('الرجاء كتابة نص أولاً!');
-                return null;
-            }
-            const encodedText = encodeURIComponent(text);
-            return `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodedText}&tl=ar&client=tw-ob`;
+        function getUrl() {
+            var t = document.getElementById('txt').value.trim();
+            if(!t) { alert('الرجاء كتابة نص أولاً!'); return null; }
+            return 'https://translate.google.com/translate_tts?ie=UTF-8&q=' + encodeURIComponent(t) + '&tl=ar&client=tw-ob';
         }
-
-        function playText() {
-            const url = getAudioUrl();
-            if (!url) return;
-            const player = document.getElementById('audioPlayer');
-            player.src = url;
-            player.style.display = 'block';
-            player.play().catch(err => {
-                alert('تعذر تشغيل الصوت، تأكد من اتصال الإنترنت.');
-            });
+        function playAudio() {
+            var url = getUrl();
+            if(!url) return;
+            var p = document.getElementById('player');
+            p.src = url;
+            p.style.display = 'block';
+            p.play();
         }
-
-        function downloadMP3() {
-            const text = document.getElementById('textInput').value.trim();
-            if (!text) {
-                alert('الرجاء كتابة نص أولاً لتحميله!');
-                return;
-            }
-            const url = getAudioUrl();
-            if (!url) return;
-            const a = document.createElement('a');
+        function downloadAudio() {
+            var url = getUrl();
+            if(!url) return;
+            var a = document.createElement('a');
             a.href = url;
-            a.download = 'audio-speech.mp3';
+            a.download = 'audio.mp3';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
