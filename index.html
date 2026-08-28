@@ -35,12 +35,11 @@
     <script>
         function getAudioUrl() {
             var t = document.getElementById('txt').value;
-            if(!t || t.trim() === '') {
+            if(!t || t.replace(/^\s+|\s+$/g, '') === '') {
                 alert('الرجاء كتابة نص أولاً!');
                 return null;
             }
             var encoded = encodeURIComponent(t);
-            // استخدام رابط مباشر مدعوم وثابت لتوليد ملفات الصوت
             return 'https://translate.google.com/translate_tts?ie=UTF-8&q=' + encoded + '&tl=ar&client=tw-ob';
         }
 
@@ -55,7 +54,6 @@
         function downloadAudio() {
             var url = getAudioUrl();
             if(!url) return;
-            // فتح الرابط في تبويب جديد لتحميل ملف الـ MP3 مباشرة
             window.open(url, '_blank');
         }
     </script>
