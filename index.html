@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>منصة تحويل النصوص لأصوات</title>
+    <!-- مكتبة سحابية لتشغيل الصوت العربي على ويندوز 7 والمتصفحات القديمة -->
+    <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
     <style>
         body { background: #eef2f7; font-family: Tahoma, Arial, sans-serif; text-align: right; direction: rtl; margin: 0; padding: 20px; }
         .box { width: 500px; max-width: 100%; margin: 20px auto; background: #fff; padding: 25px; border: 2px solid #333; border-radius: 8px; box-sizing: border-box; }
         .ad { background: #ffeb3b; padding: 15px; margin-bottom: 15px; text-align: center; border: 2px dashed #f57c00; color: #d32f2f; font-size: 15px; font-weight: bold; border-radius: 4px; display: block; }
-        textarea { width: 100%; height: 130px; margin-bottom: 15px; padding: 10px; box-sizing: border-box; font-size: 16px; border: 2px solid #ccc; border-radius: 4px; display: block; }
+        textarea { width: 100%; height: 130px; margin-bottom: 15px; padding: 10px; box-sizing: border-box; font-size: 16px; border: 2px solid #ccc; border-radius: 4px; display: block; resize: vertical; }
         .btn { width: 100%; padding: 15px; color: #fff; border: none; font-size: 18px; font-weight: bold; margin-bottom: 10px; cursor: pointer; border-radius: 4px; display: block; text-align: center; }
         .btn-green { background: #2e7d32; }
         .btn-blue { background: #1976d2; }
-        audio { width: 100%; margin-top: 15px; display: block; }
         #status { margin-top: 10px; padding: 10px; background: #e8f5e9; color: #2e7d32; font-weight: bold; text-align: center; border-radius: 4px; display: none; }
     </style>
 </head>
@@ -21,15 +22,12 @@
         <div class="ad">📢 مساحة إعلانية علوية (Banner Ad)</div>
         
         <h2 style="color: #2e7d32; text-align: center; margin-top: 0;">منصة تحويل النصوص لأصوات</h2>
-        <p style="text-align: center; color: #555; font-size: 14px;">اكتب النص، استمع إليه، وحمله كملف MP3</p>
+        <p style="text-align: center; color: #555; font-size: 14px;">اكتب النص، استمع إليه، وحمله بسهولة</p>
 
         <textarea id="txt" placeholder="اكتب هنا أي نص باللغة العربية..."></textarea>
 
-        <button class="btn btn-green" onclick="playAudio()">🔊 استماع مباشر للصوت</button>
-        <button class="btn btn-blue" onclick="downloadAudio()">📥 تحميل ملف MP3</button>
-
-        <!-- مشغل الصوت المرئي المباشر -->
-        <audio id="player" controls="controls"></audio>
+        <button class="btn btn-green" onclick="playVoice()">🔊 استماع مباشر للصوت</button>
+        <button class="btn btn-blue" onclick="downloadMP3()">📥 تحميل ملف MP3</button>
 
         <div id="status"></div>
 
@@ -38,42 +36,44 @@
     </div>
 
     <script>
-        function showStatus(msg) {
+        function playVoice() {
+            var text = document.getElementById('txt').value;
+            if(!text || text.replace(/^\s+|\s+$/g, '') === '') {
+                alert('الرجاء كتابة نص أولاً!');
+                return;
+            }
+            
             var st = document.getElementById('status');
             st.style.display = 'block';
-            st.innerHTML = msg;
-        }
+            st.innerHTML = 'جاري توليد وتشغيل الصوت...';
 
-        function getAudioUrl() {
-            var t = document.getElementById('txt').value;
-            if (!t || t.replace(/^\s+|\s+$/g, '') === '') {
-                alert('من فضلك اكتب نصاً في المربع أولاً!');
-                return null;
+            if (typeof responsiveVoice !== 'undefined') {
+                responsiveVoice.speak(text, "Arabic Female", {
+                    onend: function () {
+                        st.innerHTML = 'تم الانتهاء من التشغيل بنجاح.';
+                    },
+                    onerror: function () {
+                        st.innerHTML = 'تعذر التشغيل، تأكد من اتصال الإنترنت.';
+                    }
+                });
+            } else {
+                alert('جاري تحميل ملفات التشغيل، يرجى إعادة المحاولة بعد ثانية واحدة.');
             }
-            var encoded = encodeURIComponent(t);
-            // استخدام سيرفر StreamElements المخصص لتوليد ملفات MP3 العربية بثبات
-            return 'https://api.streamelements.com/kappa/v2/speech?voice=Zeina&text=' + encoded;
         }
 
-        function playAudio() {
-            var url = getAudioUrl();
-            if (!url) return;
+        function downloadMP3() {
+            var text = document.getElementById('txt').value;
+            if(!text || text.replace(/^\s+|\s+$/g, '') === '') {
+                alert('الرجاء كتابة نص أولاً للتحميل!');
+                return;
+            }
             
-            showStatus('جاري تحميل وتشغيل ملف الـ MP3...');
-            var player = document.getElementById('player');
-            player.src = url;
-            player.play().then(function() {
-                showStatus('يعمل الصوت الآن بنجاح عبر المشغل بالأعلى.');
-            }).catch(function(e) {
-                showStatus('اضغط على زر التشغيل (Play) في مشغل الصوت أسفل الأزرار مباشرة.');
-            });
-        }
+            var st = document.getElementById('status');
+            st.style.display = 'block';
+            st.innerHTML = 'جاري تجهيز رابط التحميل...';
 
-        function downloadAudio() {
-            var url = getAudioUrl();
-            if (!url) return;
-            
-            showStatus('جاري تجهيز وتحميل ملف الـ MP3...');
+            var encoded = encodeURIComponent(text);
+            var url = 'https://translate.google.com/translate_tts?ie=UTF-8&q=' + encoded + '&tl=ar&client=tw-ob';
             window.open(url, '_blank');
         }
     </script>
