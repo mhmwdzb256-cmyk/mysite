@@ -18,13 +18,13 @@
         <div class="ad">مساحة إعلانية علوية (Banner Ad)</div>
         
         <h2 style="color: #2e7d32; text-align: center; margin-top: 0;">منصة تحويل النصوص لأصوات</h2>
-        <p style="text-align: center; color: #666; font-size: 14px;">اكتب النص واستمّع إليه مباشرة من جهازك</p>
+        <p style="text-align: center; color: #666; font-size: 14px;">اكتب النص واستمع إليه فوراً من جهازك</p>
 
         <textarea id="txt" placeholder="اكتب النص هنا بالعربية..."></textarea>
 
         <button class="btn1" onclick="speakText()">استماع مباشر</button>
 
-        <div class="note">يعتمد على محرك الصوت المداخلي لضمان عدم توقفه أبداً.</div>
+        <div class="note">يعمل مباشرة من المتصفح بدون أي أخطاء اتصال.</div>
 
         <!-- مساحة إعلانية سفلية -->
         <div class="ad" style="margin-top: 15px;">مساحة إعلانية سفلية (Banner Ad)</div>
@@ -38,13 +38,13 @@
                 return;
             }
             if (!('speechSynthesis' in window)) {
-                alert('متصفحك لا يدعم خاصية التحدث الصوتي، يفضل استخدام متصفح حديث.');
+                alert('متصفحك لا يدعم خاصية الصوت.');
                 return;
             }
-            window.speechSynthesis.cancel(); // إيقاف أي صوت سابق
+            window.speechSynthesis.cancel();
             var utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'ar-SA'; // لغة عربية
-            utterance.rate = 1.0; // السرعة عادية
+            utterance.lang = 'ar-SA';
+            utterance.rate = 1.0;
             window.speechSynthesis.speak(utterance);
         }
     </script>
