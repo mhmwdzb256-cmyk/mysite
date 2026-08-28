@@ -15,6 +15,7 @@
 </head>
 <body>
     <div class="box">
+        <!-- مساحة إعلانية علوية -->
         <div class="ad">مساحة إعلانية علوية (Banner Ad)</div>
         
         <h2 style="color: #2e7d32; text-align: center; margin-top: 0;">منصة تحويل النصوص لأصوات</h2>
@@ -27,6 +28,7 @@
 
         <audio id="player" controls></audio>
 
+        <!-- مساحة إعلانية سفلية -->
         <div class="ad" style="margin-top: 15px;">مساحة إعلانية سفلية (Banner Ad)</div>
     </div>
 
@@ -34,7 +36,7 @@
         function getUrl() {
             var t = document.getElementById('txt').value.trim();
             if(!t) { alert('الرجاء كتابة نص أولاً!'); return null; }
-            return 'https://translate.google.com/translate_tts?ie=UTF-8&q=' + encodeURIComponent(t) + '&tl=ar&client=tw-ob';
+            return 'https://api.streamelements.com/kappa/v2/speech?voice=Zeina&text=' + encodeURIComponent(t);
         }
         function playAudio() {
             var url = getUrl();
@@ -42,7 +44,9 @@
             var p = document.getElementById('player');
             p.src = url;
             p.style.display = 'block';
-            p.play();
+            p.play().catch(function(e) {
+                alert('تعذر تشغيل الصوت، تأكد من الاتصال.');
+            });
         }
         function downloadAudio() {
             var url = getUrl();
@@ -50,6 +54,7 @@
             var a = document.createElement('a');
             a.href = url;
             a.download = 'audio.mp3';
+            a.target = '_blank';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
