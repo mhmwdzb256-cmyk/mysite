@@ -4,62 +4,85 @@
     <meta charset="UTF-8">
     <title>منصة تحويل النصوص لأصوات</title>
     <style>
-        body { background: #f0f2f5; font-family: Tahoma, Arial, sans-serif; text-align: right; direction: rtl; margin: 0; padding: 20px; }
-        .box { width: 500px; max-width: 100%; margin: 20px auto; background: #fff; padding: 25px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
-        .ad { background: #fff3cd; padding: 12px; margin-bottom: 15px; text-align: center; border: 1px dashed #ffeeba; color: #856404; font-size: 13px; border-radius: 4px; display: block; }
-        textarea { width: 100%; height: 130px; margin-bottom: 15px; padding: 10px; box-sizing: border-box; font-size: 16px; display: block; border: 1px solid #ccc; border-radius: 4px; resize: vertical; }
-        .btn-play { width: 100%; padding: 14px; background: #2e7d32; color: #fff; border: none; font-size: 16px; font-weight: bold; margin-bottom: 10px; cursor: pointer; display: block; border-radius: 4px; }
-        .btn-download { width: 100%; padding: 14px; background: #1976d2; color: #fff; border: none; font-size: 16px; font-weight: bold; margin-bottom: 10px; cursor: pointer; display: block; border-radius: 4px; }
+        body { background: #eef2f7; font-family: Tahoma, Arial, sans-serif; text-align: right; direction: rtl; margin: 0; padding: 20px; }
+        .box { width: 500px; max-width: 100%; margin: 20px auto; background: #fff; padding: 25px; border: 2px solid #333; border-radius: 8px; box-sizing: border-box; }
+        .ad { background: #ffeb3b; padding: 15px; margin-bottom: 15px; text-align: center; border: 2px dashed #f57c00; color: #d32f2f; font-size: 15px; font-weight: bold; border-radius: 4px; display: block; }
+        textarea { width: 100%; height: 130px; margin-bottom: 15px; padding: 10px; box-sizing: border-box; font-size: 16px; border: 2px solid #ccc; border-radius: 4px; display: block; }
+        .btn { width: 100%; padding: 15px; color: #fff; border: none; font-size: 18px; font-weight: bold; margin-bottom: 10px; cursor: pointer; border-radius: 4px; display: block; text-align: center; }
+        .btn-green { background: #2e7d32; }
+        .btn-blue { background: #1976d2; }
+        #status { margin-top: 10px; padding: 10px; background: #e8f5e9; color: #2e7d32; font-weight: bold; text-align: center; border-radius: 4px; display: none; }
     </style>
 </head>
 <body>
     <div class="box">
         <!-- مساحة إعلانية علوية -->
-        <div class="ad">مساحة إعلانية علوية (Banner Ad)</div>
+        <div class="ad">📢 مساحة إعلانية علوية (Banner Ad)</div>
         
         <h2 style="color: #2e7d32; text-align: center; margin-top: 0;">منصة تحويل النصوص لأصوات</h2>
-        <p style="text-align: center; color: #666; font-size: 14px;">اكتب النص، استمع إليه، وحمله بسهولة</p>
+        <p style="text-align: center; color: #555; font-size: 14px;">اكتب النص واضغط استماع أو تحميل MP3</p>
 
-        <textarea id="txt" placeholder="اكتب النص هنا بالعربية..."></textarea>
+        <textarea id="txt" placeholder="اكتب هنا أي نص باللغة العربية..."></textarea>
 
-        <button class="btn-play" onclick="playText()">استماع مباشر</button>
-        <button class="btn-download" onclick="downloadText()">تحميل النص وملف العمل</button>
+        <button class="btn btn-green" onclick="doSpeak()">🔊 استماع مباشر للصوت</button>
+        <button class="btn btn-blue" onclick="doDownload()">📥 تحميل ملف MP3</button>
+
+        <div id="status"></div>
 
         <!-- مساحة إعلانية سفلية -->
-        <div class="ad" style="margin-top: 15px;">مساحة إعلانية سفلية (Banner Ad)</div>
+        <div class="ad" style="margin-top: 15px;">📢 مساحة إعلانية سفلية (Banner Ad)</div>
     </div>
 
     <script>
-        function playText() {
+        function showStatus(msg) {
+            var st = document.getElementById('status');
+            st.style.display = 'block';
+            st.innerHTML = msg;
+        }
+
+        function doSpeak() {
             var t = document.getElementById('txt').value;
-            if(!t || t.replace(/^\s+|\s+$/g, '') === '') {
-                alert('الرجاء كتابة نص أولاً!');
+            if (!t || t.replace(/^\s+|\s+$/g, '') === '') {
+                alert('من فضلك اكتب نصاً في المربع أولاً!');
                 return;
             }
+            
+            showStatus('جاري تشغيل الصوت...');
+            
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 var utterance = new SpeechSynthesisUtterance(t);
                 utterance.lang = 'ar-SA';
+                utterance.rate = 1.0;
+                utterance.onend = function() {
+                    showStatus('تم الانتهاء من التشغيل بنجاح.');
+                };
+                utterance.onerror = function() {
+                    showStatus('تعذر التشغيل، حاول مرة أخرى.');
+                };
                 window.speechSynthesis.speak(utterance);
             } else {
-                alert('متصفحك لا يدعم التشغيل الصوتي المباشر.');
+                alert('متصفحك لا يدعم خاصية الصوت المباشر.');
             }
         }
 
-        function downloadText() {
+        function doDownload() {
             var t = document.getElementById('txt').value;
-            if(!t || t.replace(/^\s+|\s+$/g, '') === '') {
-                alert('الرجاء كتابة نص أولاً لتحميله!');
+            if (!t || t.replace(/^\s+|\s+$/g, '') === '') {
+                alert('من فضلك اكتب نصاً في المربع أولاً للتحميل!');
                 return;
             }
-            var blob = new Blob([t], {type: 'text/plain;charset=utf-8'});
-            var url = URL.createObjectURL(blob);
-            var a = document.createElement('a');
-            a.href = url;
-            a.download = 'speech-text.txt';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            
+            showStatus('جاري تجهيز ملف MP3 للتحميل...');
+            
+            var encoded = encodeURIComponent(t);
+            var url = 'https://translate.google.com/translate_tts?ie=UTF-8&q=' + encoded + '&tl=ar&client=tw-ob';
+            
+            var win = window.open(url, '_blank');
+            if (!win) {
+                window.location.href = url;
+            }
+            showStatus('تم فتح نافذة تحميل الـ MP3.');
         }
     </script>
 </body>
