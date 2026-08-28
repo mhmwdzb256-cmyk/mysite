@@ -8,9 +8,10 @@
         .box { width: 500px; max-width: 100%; margin: 20px auto; background: #fff; padding: 25px; border: 2px solid #333; border-radius: 8px; box-sizing: border-box; }
         .ad { background: #ffeb3b; padding: 15px; margin-bottom: 15px; text-align: center; border: 2px dashed #f57c00; color: #d32f2f; font-size: 15px; font-weight: bold; border-radius: 4px; display: block; }
         textarea { width: 100%; height: 130px; margin-bottom: 15px; padding: 10px; box-sizing: border-box; font-size: 16px; border: 2px solid #ccc; border-radius: 4px; display: block; resize: vertical; }
-        .btn { width: 100%; padding: 15px; color: #fff; border: none; font-size: 18px; font-weight: bold; margin-bottom: 10px; cursor: pointer; border-radius: 4px; display: block; text-align: center; text-decoration: none; box-sizing: border-box; }
+        .btn { width: 100%; padding: 15px; color: #fff; border: none; font-size: 18px; font-weight: bold; margin-bottom: 10px; cursor: pointer; border-radius: 4px; display: block; text-align: center; }
         .btn-green { background: #2e7d32; }
         .btn-blue { background: #1976d2; }
+        audio { width: 100%; margin-top: 15px; display: block; border: 1px solid #ccc; border-radius: 4px; }
         #status { margin-top: 10px; padding: 10px; background: #e8f5e9; color: #2e7d32; font-weight: bold; text-align: center; border-radius: 4px; display: block; }
     </style>
 </head>
@@ -24,27 +25,55 @@
 
         <textarea id="txt" placeholder="اكتب هنا أي نص باللغة العربية..."></textarea>
 
-        <a id="playBtn" href="#" target="_blank" class="btn btn-green" onclick="return processText(this)">🔊 استماع مباشر للصوت</a>
-        <a id="downloadBtn" href="#" target="_blank" class="btn btn-blue" onclick="return processText(this)">📥 تحميل ملف MP3</a>
+        <button class="btn btn-green" onclick="playAudioDirect()">🔊 استماع مباشر للصوت</button>
+        <button class="btn btn-blue" onclick="downloadMP3File()">📥 تحميل ملف MP3</button>
+
+        <!-- مشغل صوت مرئي -->
+        <audio id="audioPlayer" controls="controls"></audio>
 
         <div id="status">جاهز للاستخدام</div>
 
         <!-- مساحة إعلانية سفلية -->
-        * <div class="ad" style="margin-top: 15px;">📢 مساحة إعلانية سفلية (Banner Ad)</div>
+        <div class="ad" style="margin-top: 15px;">📢 مساحة إعلانية سفلية (Banner Ad)</div>
     </div>
 
     <script>
-        function processText(element) {
+        function updateStatus(msg) {
+            var st = document.getElementById('status');
+            st.innerHTML = msg;
+        }
+
+        function getTTSUrl() {
             var t = document.getElementById('txt').value;
             if (!t || t.replace(/^\s+|\s+$/g, '') === '') {
                 alert('الرجاء كتابة نص في المربع أولاً!');
-                return false;
+                return null;
             }
             var encoded = encodeURIComponent(t);
-            var url = 'https://translate.google.com/translate_tts?ie=UTF-8&q=' + encoded + '&tl=ar&client=tw-ob';
-            element.href = url;
-            document.getElementById('status').innerHTML = 'تم فتح الصوت بنجاح في تبويب جديد.';
-            return true;
+            // استخدام سيرفر بديل ومستقر لإنتاج ملفات MP3 العربية بدون أي أخطاء 404
+            return 'https://api.streamelements.com/kappa/v2/speech?voice=Zeina&text=' + encoded;
+        }
+
+        function playAudioDirect() {
+            var url = getTTSUrl();
+            if (!url) return;
+            
+            updateStatus('جاري تحميل وتشغيل الصوت...');
+            var player = document.getElementById('audioPlayer');
+            player.src = url;
+            player.play().then(function() {
+                updateStatus('يعمل الصوت الآن من المشغل أدناه.');
+            }).catch(function(err) {
+                updateStatus('اضغط على زر التشغيل ▶ في مشغل الصوت أدناه يدوياً.');
+            });
+        }
+
+        function downloadMP3File() {
+            var url = getTTSUrl();
+            if (!url) return;
+            
+            updateStatus('جاري تحميل ملف الـ MP3...');
+            window.open(url, '_blank');
         }
     </script>
 </body>
