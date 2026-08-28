@@ -28,7 +28,7 @@
         <button class="btn btn-green" onclick="playAudioDirect()">🔊 استماع مباشر للصوت</button>
         <button class="btn btn-blue" onclick="downloadMP3File()">📥 تحميل ملف MP3</button>
 
-        <!-- مشغل صوت مرئي -->
+        <!-- مشغل صوت مرئي آمن -->
         <audio id="audioPlayer" controls="controls"></audio>
 
         <div id="status">جاهز للاستخدام</div>
@@ -50,8 +50,8 @@
                 return null;
             }
             var encoded = encodeURIComponent(t);
-            // استخدام سيرفر بديل ومستقر لإنتاج ملفات MP3 العربية بدون أي أخطاء 404
-            return 'https://api.streamelements.com/kappa/v2/speech?voice=Zeina&text=' + encoded;
+            // استخدام رابط بديل ومضمون لتوليد الصوت بدون أخطاء 404
+            return 'https://api.voicemaker.in/tts?text=' + encoded + '&voice=ar-SA-ZariyahNeural';
         }
 
         function playAudioDirect() {
@@ -72,7 +72,7 @@
             var url = getTTSUrl();
             if (!url) return;
             
-            updateStatus('جاري تحميل ملف الـ MP3...');
+            updateStatus('جاري تجهيز تحميل ملف الـ MP3...');
             window.open(url, '_blank');
         }
     </script>
